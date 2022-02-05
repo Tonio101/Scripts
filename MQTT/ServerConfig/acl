@@ -1,0 +1,13 @@
+# Allow anonymous access to the sys
+topic read $SYS/#
+
+# Allow anonymous to read weather
+topic read yolink/#
+topic read homeassistant/#
+
+# readwrite to the loop
+user <your username from above>
+topic yolink/#
+
+user <your username from above>
+topic homeassistant/#
