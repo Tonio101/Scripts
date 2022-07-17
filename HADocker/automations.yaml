@@ -1,0 +1,223 @@
+- id: RebootHAContainer
+  alias: Restart_HA_Schedule
+  description: Restart HA
+  trigger:
+  - platform: time
+    at: 03:00:00
+    id: restart_home_assistant
+  condition:
+  - condition: time
+    after: 01:00:00
+    before: 05:00:00
+  action:
+  - service: homeassistant.restart
+  mode: single
+- id: DoorSensorTest
+  alias: Test Door Open
+  description: For testing and development
+  trigger:
+  - platform: mqtt
+    topic: yolink/DoorSensor/d88b4c01000324fd/report
+    id: test_door_open
+    payload: DoorEvent.OPEN
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Test door sensor open
+      cache: true
+  mode: single
+- id: Front_Door_Sensor
+  alias: Front Door Open
+  description: Notify Google Home Hub Front Door Open
+  trigger:
+  - platform: mqtt
+    topic: yolink/DoorSensor/d88b4c02000279b1/report
+    id: front_door_open
+    payload: DoorEvent.OPEN
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Front door open!
+      cache: true
+  mode: single
+- id: Main_Garage_Door_Sensor
+  alias: Main Garage Door Open
+  description: Notify Google Home Hub Main Garage Door Open
+  trigger:
+  - platform: mqtt
+    topic: yolink/DoorSensor/d88b4c02000277fc/report
+    id: main_garage_door_open
+    payload: DoorEvent.OPEN
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Main garage door open!
+      cache: true
+  mode: single
+- id: Garage_Door_Sensor
+  alias: Garage Door Open
+  description: Notify Google Home Hub Garage Door Open
+  trigger:
+  - platform: mqtt
+    topic: yolink/DoorSensor/d88b4c0100032613/report
+    id: garage_door_open
+    payload: DoorEvent.OPEN
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Garage door open!
+      cache: true
+  mode: single
+- id: Side_Garage_Door_Sensor
+  alias: Side Garage Door Open
+  description: Notify Google Home Hub Side Garage Door Open
+  trigger:
+  - platform: mqtt
+    topic: yolink/DoorSensor/d88b4c0200027a23/report
+    payload: DoorEvent.OPEN
+    id: side_garage_door_open
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Side garage door open!
+      cache: true
+  mode: single
+- id: Side_Gate_Door_Sensor
+  alias: Side Gate Door Open
+  description: Notify Google Home Hub Side Gate Door Open
+  trigger:
+  - platform: mqtt
+    topic: yolink/DoorSensor/d88b4c01000337f4/report
+    id: side_gate_door_open
+    payload: DoorEvent.OPEN
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Side gate door open!
+      cache: true
+  mode: single
+- id: Mail_Sensor
+  alias: You've Got Mail
+  description: Notify Google Home Hub You've Got Mail
+  trigger:
+  - platform: mqtt
+    topic: yolink/DoorSensor/d88b4c0200015b81/report
+    payload: DoorEvent.OPEN
+    id: youve_got_mail
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: You've got mail!
+      cache: true
+  mode: single
+- id: Guest_Bathroom_Sensor
+  alias: Guest Bathroom Toilet
+  description: Leaky Toilet
+  trigger:
+  - platform: mqtt
+    topic: yolink/LeakSensor/d88b4c0300001690/report
+    id: guest_bathroom_toilet
+    payload: LeakDetected
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Water leak detected in guest bathroom toilet!
+      cache: true
+  mode: single
+- id: Master_Bathroom_Sensor
+  alias: Master Bathroom Toilet
+  description: Leaky Toilet
+  trigger:
+  - platform: mqtt
+    id: master_bathroom_toilet
+    topic: yolink/LeakSensor/d88b4c03000017e0/report
+    payload: LeakDetected
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Water leak detected in master bathroom toilet!
+      cache: true
+  mode: single
+- id: Dryer_Vibration_Sensor
+  alias: Dryer Vibration Sensor
+  description: Notifies that dryer is done
+  trigger:
+  - platform: mqtt
+    topic: yolink/VibrationSensor/d88b4c01000392b8/report
+    id: dryer_vibration_sensor
+    payload: Dryer Finished
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Dryer Completed Cycle
+      cache: true
+  mode: single
+- id: Washer_Vibration_Sensor
+  alias: Washer Vibration Sensor
+  description: Notify that washer is done
+  trigger:
+  - platform: mqtt
+    topic: yolink/VibrationSensor/d88b4c0100039273/report
+    id: wahser_vibration_sensor
+    payload: Washer Finished
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: Washer complete cycle
+      cache: true
+  mode: single
+- id: '1647485521283'
+  alias: Hallway Lights Automation
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 4fdd542036d9da130e8976124672d690
+    entity_id: switch.hallway_lights
+    domain: switch
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 40
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 4fdd542036d9da130e8976124672d690
+    entity_id: switch.hallway_lights
+    domain: switch
+  mode: single
+- id: '1649471687187'
+  alias: FPL Notifier
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: fpl/weekly_stats
+  condition: []
+  action:
+  - service: tts.google_translate_say
+    data:
+      entity_id: media_player.kitchen_display
+      message: '{{payload}}'
+  mode: single
