@@ -1,0 +1,15 @@
+{
+    "name": "node-red-project",
+    "description": "A Node-RED Project",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "node-red-contrib-actionflows": "~2.1.2",
+        "node-red-contrib-home-assistant-websocket": "~0.44.0",
+        "node-red-contrib-interval": "0.0.1",
+        "node-red-contrib-stoptimer": "0.0.7",
+        "node-red-contrib-time-range-switch": "~1.1.2",
+        "node-red-contrib-timecheck": "~1.1.0",
+        "node-red-node-timeswitch": "~0.1.0"
+    }
+}

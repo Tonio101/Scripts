@@ -1,0 +1,181 @@
+[
+    {
+        "id": "85ef1090a77305ac",
+        "type": "tab",
+        "label": "FPL Updates Flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7102b41f3cb4cf8f",
+        "type": "server",
+        "name": "Home Assistant",
+        "version": 4,
+        "addon": false,
+        "rejectUnauthorizedCerts": false,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": true,
+        "cacheJson": true,
+        "heartbeat": false,
+        "heartbeatInterval": "30",
+        "areaSelector": "friendlyName",
+        "deviceSelector": "friendlyName",
+        "entitySelector": "friendlyName",
+        "statusSeparator": ": ",
+        "statusYear": "hidden",
+        "statusMonth": "short",
+        "statusDay": "numeric",
+        "statusHourCycle": "default",
+        "statusTimeFormat": "h:m"
+    },
+    {
+        "id": "40d419fd8008a578",
+        "type": "mqtt-broker",
+        "name": "Localhost-MQTT-Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "3d79defe044c8345",
+        "type": "api-call-service",
+        "z": "85ef1090a77305ac",
+        "name": "Send Message to Google Hub-Kitchen",
+        "server": "7102b41f3cb4cf8f",
+        "version": 5,
+        "debugenabled": false,
+        "domain": "tts",
+        "service": "google_translate_say",
+        "areaId": [],
+        "deviceId": [],
+        "entityId": [
+            "media_player.kitchen_display"
+        ],
+        "data": "{\"message\": \"{{payload}}\"}",
+        "dataType": "json",
+        "mergeContext": "",
+        "mustacheAltTags": false,
+        "outputProperties": [],
+        "queue": "none",
+        "x": 650,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "995612a5bcf9f5e9",
+        "type": "mqtt in",
+        "z": "85ef1090a77305ac",
+        "name": "MQTT_FPL_Updates_Subscriber",
+        "topic": "fpl/fpl_updates",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "40d419fd8008a578",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 320,
+        "wires": [
+            [
+                "03443a9710ba8b46"
+            ]
+        ]
+    },
+    {
+        "id": "03443a9710ba8b46",
+        "type": "api-call-service",
+        "z": "85ef1090a77305ac",
+        "name": "Volume_70",
+        "server": "7102b41f3cb4cf8f",
+        "version": 5,
+        "debugenabled": false,
+        "domain": "media_player",
+        "service": "volume_set",
+        "areaId": [],
+        "deviceId": [],
+        "entityId": [
+            "media_player.kitchen_display"
+        ],
+        "data": "{\"volume_level\": \"0.7\"}",
+        "dataType": "json",
+        "mergeContext": "",
+        "mustacheAltTags": false,
+        "outputProperties": [],
+        "queue": "none",
+        "x": 390,
+        "y": 320,
+        "wires": [
+            [
+                "3d79defe044c8345"
+            ]
+        ]
+    },
+    {
+        "id": "73f0f09eefbf6d42",
+        "type": "interval",
+        "z": "85ef1090a77305ac",
+        "name": "interval",
+        "interval": "60",
+        "onstart": true,
+        "msg": "ping",
+        "showstatus": true,
+        "unit": "minutes",
+        "statusformat": "YYYY-MM-D HH:mm:ss",
+        "x": 130,
+        "y": 160,
+        "wires": [
+            [
+                "bd7013dfbd5b538f"
+            ]
+        ]
+    },
+    {
+        "id": "bd7013dfbd5b538f",
+        "type": "api-call-service",
+        "z": "85ef1090a77305ac",
+        "name": "Volume_70",
+        "server": "7102b41f3cb4cf8f",
+        "version": 5,
+        "debugenabled": false,
+        "domain": "media_player",
+        "service": "volume_set",
+        "areaId": [],
+        "deviceId": [],
+        "entityId": [
+            "media_player.kitchen_display"
+        ],
+        "data": "{\"volume_level\": \"0.7\"}",
+        "dataType": "json",
+        "mergeContext": "",
+        "mustacheAltTags": false,
+        "outputProperties": [],
+        "queue": "none",
+        "x": 590,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    }
+]
