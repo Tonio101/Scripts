@@ -22,11 +22,11 @@
     payload: DoorEvent.OPEN
   condition: []
   action:
-  - service: tts.google_translate_say
+  - service: tts.google_cloud
     data:
       entity_id: media_player.kitchen_display
-      message: Test door sensor open
       cache: true
+      message: Test sensor
   mode: single
 - id: Front_Door_Sensor
   alias: Front Door Open
@@ -40,13 +40,13 @@
   action:
   - service: media_player.volume_set
     data:
-      volume_level: 0.7
+      volume_level: 0.8
     target:
       entity_id: media_player.kitchen_display
-  - service: tts.google_translate_say
+  - service: tts.google_cloud
     data:
       entity_id: media_player.kitchen_display
-      message: Front door open!
+      message: Front door open
       cache: true
   mode: single
 - id: Main_Garage_Door_Sensor
@@ -59,10 +59,10 @@
     payload: DoorEvent.OPEN
   condition: []
   action:
-  - service: tts.google_translate_say
+  - service: tts.google_cloud
     data:
       entity_id: media_player.kitchen_display
-      message: Main garage door open!
+      message: Main garage door open
       cache: true
   mode: single
 - id: Garage_Door_Sensor
@@ -75,10 +75,10 @@
     payload: DoorEvent.OPEN
   condition: []
   action:
-  - service: tts.google_translate_say
+  - service: tts.google_cloud
     data:
       entity_id: media_player.kitchen_display
-      message: Garage door open!
+      message: Garage Door Open
       cache: true
   mode: single
 - id: Side_Garage_Door_Sensor
@@ -91,10 +91,10 @@
     id: side_garage_door_open
   condition: []
   action:
-  - service: tts.google_translate_say
+  - service: tts.google_cloud
     data:
       entity_id: media_player.kitchen_display
-      message: Side garage door open!
+      message: Side garage door open
       cache: true
   mode: single
 - id: Side_Gate_Door_Sensor
@@ -107,10 +107,10 @@
     payload: DoorEvent.OPEN
   condition: []
   action:
-  - service: tts.google_translate_say
+  - service: tts.google_cloud
     data:
       entity_id: media_player.kitchen_display
-      message: Side gate door open!
+      message: Side gate door open
       cache: true
   mode: single
 - id: Mail_Sensor
@@ -123,10 +123,15 @@
     id: youve_got_mail
   condition: []
   action:
-  - service: tts.google_translate_say
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.8
+    target:
+      entity_id: media_player.kitchen_display
+  - service: tts.google_cloud
     data:
       entity_id: media_player.kitchen_display
-      message: You've got mail!
+      message: You've got mail
       cache: true
   mode: single
 - id: Guest_Bathroom_Sensor

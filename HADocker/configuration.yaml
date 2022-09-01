@@ -1,0 +1,25 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+#tts:
+#  - platform: google_translate
+
+tts:
+  - platform: google_cloud
+    key_file: my-apikey-cloud.json
+    service_name: google_cloud
+    language: en-US
+#    language: en-GB
+#    gender: female
+    voice: en-US-Wavenet-F
+#    voice: en-GB-Wavenet-F
+    speed: 0.9
+#    pitch: -2
+#    gain: 0.0
+    text_type: text
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
