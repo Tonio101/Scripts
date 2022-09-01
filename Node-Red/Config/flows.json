@@ -64,20 +64,20 @@
         "version": 5,
         "debugenabled": false,
         "domain": "tts",
-        "service": "google_translate_say",
+        "service": "google_cloud",
         "areaId": [],
         "deviceId": [],
         "entityId": [
             "media_player.kitchen_display"
         ],
-        "data": "{\"message\": \"{{payload}}\"}",
+        "data": "{\"message\":\"{{payload}}\"}",
         "dataType": "json",
         "mergeContext": "",
         "mustacheAltTags": false,
         "outputProperties": [],
         "queue": "none",
-        "x": 650,
-        "y": 420,
+        "x": 690,
+        "y": 140,
         "wires": [
             []
         ]
@@ -96,7 +96,7 @@
         "rh": 0,
         "inputs": 0,
         "x": 150,
-        "y": 320,
+        "y": 140,
         "wires": [
             [
                 "03443a9710ba8b46"
@@ -107,7 +107,7 @@
         "id": "03443a9710ba8b46",
         "type": "api-call-service",
         "z": "85ef1090a77305ac",
-        "name": "Volume_70",
+        "name": "Volume_80",
         "server": "7102b41f3cb4cf8f",
         "version": 5,
         "debugenabled": false,
@@ -118,14 +118,14 @@
         "entityId": [
             "media_player.kitchen_display"
         ],
-        "data": "{\"volume_level\": \"0.7\"}",
+        "data": "{\"volume_level\": \"0.8\"}",
         "dataType": "json",
         "mergeContext": "",
         "mustacheAltTags": false,
         "outputProperties": [],
         "queue": "none",
         "x": 390,
-        "y": 320,
+        "y": 140,
         "wires": [
             [
                 "3d79defe044c8345"
@@ -137,14 +137,14 @@
         "type": "interval",
         "z": "85ef1090a77305ac",
         "name": "interval",
-        "interval": "60",
+        "interval": "30",
         "onstart": true,
         "msg": "ping",
         "showstatus": true,
         "unit": "minutes",
         "statusformat": "YYYY-MM-D HH:mm:ss",
-        "x": 130,
-        "y": 160,
+        "x": 70,
+        "y": 60,
         "wires": [
             [
                 "bd7013dfbd5b538f"
@@ -155,7 +155,7 @@
         "id": "bd7013dfbd5b538f",
         "type": "api-call-service",
         "z": "85ef1090a77305ac",
-        "name": "Volume_70",
+        "name": "Volume_80",
         "server": "7102b41f3cb4cf8f",
         "version": 5,
         "debugenabled": false,
@@ -166,16 +166,93 @@
         "entityId": [
             "media_player.kitchen_display"
         ],
-        "data": "{\"volume_level\": \"0.7\"}",
+        "data": "{\"volume_level\": \"0.8\"}",
         "dataType": "json",
         "mergeContext": "",
         "mustacheAltTags": false,
         "outputProperties": [],
         "queue": "none",
-        "x": 590,
-        "y": 160,
+        "x": 530,
+        "y": 60,
         "wires": [
             []
+        ]
+    },
+    {
+        "id": "dd3bff9561a38c48",
+        "type": "api-call-service",
+        "z": "85ef1090a77305ac",
+        "name": "Send Message to Google Hub-Kitchen",
+        "server": "7102b41f3cb4cf8f",
+        "version": 5,
+        "debugenabled": false,
+        "domain": "tts",
+        "service": "google_cloud",
+        "areaId": [],
+        "deviceId": [],
+        "entityId": [
+            "media_player.kitchen_display"
+        ],
+        "data": "{\"message\": \"{{payload}}\"}",
+        "dataType": "json",
+        "mergeContext": "",
+        "mustacheAltTags": false,
+        "outputProperties": [],
+        "queue": "none",
+        "x": 690,
+        "y": 200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ea1d43166be68358",
+        "type": "mqtt in",
+        "z": "85ef1090a77305ac",
+        "name": "MQTT_FPL_Weekly_Winners_Subscriber",
+        "topic": "fpl/weekly_stats",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "40d419fd8008a578",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 200,
+        "wires": [
+            [
+                "06dd9c3a41445ef1"
+            ]
+        ]
+    },
+    {
+        "id": "06dd9c3a41445ef1",
+        "type": "api-call-service",
+        "z": "85ef1090a77305ac",
+        "name": "Volume_80",
+        "server": "7102b41f3cb4cf8f",
+        "version": 5,
+        "debugenabled": false,
+        "domain": "media_player",
+        "service": "volume_set",
+        "areaId": [],
+        "deviceId": [],
+        "entityId": [
+            "media_player.kitchen_display"
+        ],
+        "data": "{\"volume_level\": \"0.8\"}",
+        "dataType": "json",
+        "mergeContext": "",
+        "mustacheAltTags": false,
+        "outputProperties": [],
+        "queue": "none",
+        "x": 430,
+        "y": 200,
+        "wires": [
+            [
+                "dd3bff9561a38c48"
+            ]
         ]
     }
 ]
