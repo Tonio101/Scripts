@@ -254,3 +254,25 @@
     target:
       entity_id: media_player.kitchen_display
   mode: single
+- id: '1662351966520'
+  alias: Turn On Hallway Lights
+  description: When motion is detected and its late at night, turn on the lights.
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100050b70b
+    payload: 'ON'
+    value_template: '{% if value_json.illuminance <= 50 and value_json.occupancy ==
+      true %} ON {% else %} OFF {%endif %}
+
+      '
+  condition:
+  - condition: template
+    value_template: "{% if value.illuminance <= 50 and value.occupancy == true %}\n
+      \ ON\n{% else %}\n  OFF\n{%endif %}\n"
+    enabled: false
+  action:
+  - type: turn_on
+    device_id: 4fdd542036d9da130e8976124672d690
+    entity_id: switch.hallway_lights
+    domain: switch
+  mode: single
