@@ -266,13 +266,47 @@
 
       '
   condition:
-  - condition: template
-    value_template: "{% if value.illuminance <= 50 and value.occupancy == true %}\n
-      \ ON\n{% else %}\n  OFF\n{%endif %}\n"
-    enabled: false
+  - condition: or
+    conditions:
+    - condition: sun
+      after: sunset
+      after_offset: -0:30:00
+    - condition: sun
+      before: sunrise
+      before_offset: -0:30:00
   action:
   - type: turn_on
     device_id: 4fdd542036d9da130e8976124672d690
     entity_id: switch.hallway_lights
     domain: switch
+  mode: single
+- id: '1662396499530'
+  alias: Zigbee To MQTT Status - Offline
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/bridge/state
+    payload: offline
+    value_template: '{{ value_json.state }}'
+  condition: []
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: Zigbee to MQTT hub is offline.
+  mode: single
+- id: '1662396673198'
+  alias: Zigbee to MQTT Status - Online
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/bridge/state
+    payload: online
+    value_template: '{{ value_json.state }}'
+  condition: []
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: Zigbee to MQTT is back online.
   mode: single
