@@ -13,8 +13,11 @@ tts:
     language: en-US
 #    language: en-GB
 #    gender: female
+# Use the one below
     voice: en-US-Wavenet-F
+#    voice: en-US-Neural2-A
 #    voice: en-GB-Wavenet-F
+# Use the one below
     speed: 0.9
 #    pitch: -2
 #    gain: 0.0
@@ -23,3 +26,127 @@ tts:
 automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
+
+mqtt:
+  binary_sensor:
+    - name: "Jayden Door"
+      state_topic: "zigbee2mqtt/0x54ef44100053d11e"
+      payload_on: "ON"
+      payload_off: "OFF"
+      qos: 0
+      device_class: motion
+      #model: "RTCGQ14LM"
+      #manufacturer: "Aqara"
+      value_template: >
+        {% if value_json.occupancy == false and value_json.no_occupancy_since >= 60 %}
+        OFF
+        {% elif value_json.occupancy == true %}
+        ON
+        {%else %}
+        ON
+        {%endif %}
+    - name: "Bathroom Door"
+      state_topic: "zigbee2mqtt/0x54ef44100050b70b"
+      payload_on: "ON"
+      payload_off: "OFF"
+      qos: 0
+      device_class: motion
+      #model: "RTCGQ14LM"
+      #manufacturer: "Aqara"
+      value_template: >
+        {% if value_json.occupancy == false and value_json.no_occupancy_since >= 60 %}
+        OFF
+        {% elif value_json.occupancy == true %}
+        ON
+        {%else %}
+        ON
+        {%endif %}
+    - name: "Kitchen"
+      state_topic: "zigbee2mqtt/0x54ef44100053dc73"
+      payload_on: "ON"
+      payload_off: "OFF"
+      qos: 0
+      device_class: motion
+      #model: "RTCGQ14LM"
+      #manufacturer: "Aqara"
+      value_template: >
+        {% if value_json.occupancy == false and value_json.no_occupancy_since >= 120 %}
+        OFF
+        {% elif value_json.occupancy == true %}
+        ON
+        {%else %}
+        ON
+        {%endif %}
+    - name: "Living/Dining Room"
+      state_topic: "zigbee2mqtt/0x54ef44100053e66a"
+      payload_on: "ON"
+      payload_off: "OFF"
+      qos: 0
+      device_class: motion
+      #model: "RTCGQ14LM"
+      #manufacturer: "Aqara"
+      value_template: >
+        {% if value_json.occupancy == false and value_json.no_occupancy_since >= 120 %}
+        OFF
+        {% elif value_json.occupancy == true %}
+        ON
+        {%else %}
+        ON
+        {%endif %}
+    - name: "Dining Room"
+      state_topic: "zigbee2mqtt/0x54ef44100053d655"
+      payload_on: "ON"
+      payload_off: "OFF"
+      qos: 0
+      device_class: motion
+      #model: "RTCGQ14LM"
+      #manufacturer: "Aqara"
+      value_template: >
+        {% if value_json.occupancy == false and value_json.no_occupancy_since >= 120 %}
+        OFF
+        {% elif value_json.occupancy == true %}
+        ON
+        {%else %}
+        ON
+        {%endif %}
+    - name: "Office"
+      state_topic: "zigbee2mqtt/0x54ef44100053de99"
+      payload_on: "ON"
+      payload_off: "OFF"
+      qos: 0
+      device_class: motion
+      #model: "RTCGQ14LM"
+      #manufacturer: "Aqara"
+      value_template: >
+        {% if value_json.occupancy == false and value_json.no_occupancy_since >= 120 %}
+        OFF
+        {% elif value_json.occupancy == true %}
+        ON
+        {%else %}
+        ON
+        {%endif %}
+    - name: "Aqara Vibration Sensor - Office"
+      state_topic: "zigbee2mqtt/0x00158d000852a1bf"
+      payload_on: "ON"
+      payload_off: "OFF"
+      qos: 0
+      device_class: vibration
+      value_template: >
+        {% if value_json.vibration == true %}
+        ON
+        {%else %}
+        OFF
+        {%endif %}
+    - name: "Aqara Vibration Sensor - Guest Room"
+      state_topic: "zigbee2mqtt/0x00158d000852a7bb"
+      payload_on: "ON"
+      payload_off: "OFF"
+      qos: 0
+      device_class: vibration
+      value_template: >
+        {% if value_json.vibration == true %}
+        ON
+        {%else %}
+        OFF
+        {%endif %}
+

@@ -25,7 +25,6 @@
   - service: tts.google_cloud
     data:
       entity_id: media_player.kitchen_display
-      cache: true
       message: Test sensor
   mode: single
 - id: Front_Door_Sensor
@@ -48,6 +47,9 @@
       entity_id: media_player.kitchen_display
       message: Front door open
       cache: true
+  - service: notify.mobile_app_pixel_6
+    data:
+      message: Front door open!
   mode: single
 - id: Main_Garage_Door_Sensor
   alias: Main Garage Door Open
@@ -64,6 +66,9 @@
       entity_id: media_player.kitchen_display
       message: Main garage door open
       cache: true
+  - service: notify.mobile_app_pixel_6
+    data:
+      message: Main garage door open!
   mode: single
 - id: Garage_Door_Sensor
   alias: Garage Door Open
@@ -80,6 +85,9 @@
       entity_id: media_player.kitchen_display
       message: Garage Door Open
       cache: true
+  - service: notify.mobile_app_pixel_6
+    data:
+      message: Garage door open!
   mode: single
 - id: Side_Garage_Door_Sensor
   alias: Side Garage Door Open
@@ -134,38 +142,6 @@
       message: You've got mail
       cache: true
   mode: single
-- id: Guest_Bathroom_Sensor
-  alias: Guest Bathroom Toilet
-  description: Leaky Toilet
-  trigger:
-  - platform: mqtt
-    topic: yolink/LeakSensor/d88b4c0300001690/report
-    id: guest_bathroom_toilet
-    payload: LeakDetected
-  condition: []
-  action:
-  - service: tts.google_translate_say
-    data:
-      entity_id: media_player.kitchen_display
-      message: Water leak detected in guest bathroom toilet!
-      cache: true
-  mode: single
-- id: Master_Bathroom_Sensor
-  alias: Master Bathroom Toilet
-  description: Leaky Toilet
-  trigger:
-  - platform: mqtt
-    id: master_bathroom_toilet
-    topic: yolink/LeakSensor/d88b4c03000017e0/report
-    payload: LeakDetected
-  condition: []
-  action:
-  - service: tts.google_translate_say
-    data:
-      entity_id: media_player.kitchen_display
-      message: Water leak detected in master bathroom toilet!
-      cache: true
-  mode: single
 - id: Dryer_Vibration_Sensor
   alias: Dryer Vibration Sensor
   description: Notifies that dryer is done
@@ -209,8 +185,8 @@
     domain: switch
     for:
       hours: 0
-      minutes: 0
-      seconds: 40
+      minutes: 1
+      seconds: 0
   condition: []
   action:
   - type: turn_off
@@ -261,19 +237,30 @@
   - platform: mqtt
     topic: zigbee2mqtt/0x54ef44100050b70b
     payload: 'ON'
-    value_template: '{% if value_json.illuminance <= 50 and value_json.occupancy ==
-      true %} ON {% else %} OFF {%endif %}
+    value_template: '{% if value_json.illuminance <= 55 and value_json.occupancy ==
+      true %} ON {%else %} OFF {%endif %}
+
+      '
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053d11e
+    payload: 'ON'
+    value_template: '{% if value_json.illuminance <= 55 and value_json.occupancy ==
+      true %} ON {%else %} OFF {%endif %}
 
       '
   condition:
-  - condition: or
-    conditions:
-    - condition: sun
-      after: sunset
-      after_offset: -0:30:00
-    - condition: sun
-      before: sunrise
-      before_offset: -0:30:00
+  - condition: time
+    before: 07:00:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+    after: '18:00:00'
+    enabled: true
   action:
   - type: turn_on
     device_id: 4fdd542036d9da130e8976124672d690
@@ -294,6 +281,9 @@
     data:
       entity_id: media_player.kitchen_display
       message: Zigbee to MQTT hub is offline.
+  - service: notify.mobile_app_pixel_6
+    data:
+      message: Zigbee to MQTT is down!
   mode: single
 - id: '1662396673198'
   alias: Zigbee to MQTT Status - Online
@@ -309,4 +299,465 @@
     data:
       entity_id: media_player.kitchen_display
       message: Zigbee to MQTT is back online.
+  mode: single
+- id: '1662612917740'
+  alias: Kitchen Cabinet Lights On (Sensors)
+  description: When motion is detected and its late at night, turn on the cabinet
+    lights.
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053dc73
+    payload: 'ON'
+    value_template: '{% if value_json.illuminance <= 55 and value_json.occupancy ==
+      true %} ON {%else %} OFF {%endif %}
+
+      '
+  condition:
+  - condition: time
+    before: 07:00:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+    after: '18:30:00'
+    enabled: true
+  action:
+  - type: turn_on
+    device_id: 6f19f665991a377b68684e2072385262
+    entity_id: light.kitchen_cabinet_lights
+    domain: light
+  - type: turn_on
+    device_id: dca8abcd0eabb8d83209caa1be2bba54
+    entity_id: light.kitchen_cabinet_lights_2
+    domain: light
+  mode: single
+- id: '1662614115848'
+  alias: Kitchen Cabinet Lights Turn Off (Sensors)
+  description: When motion is not detected and its late at night, turn off the cabinet
+    lights.
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053dc73
+    payload: 'OFF'
+    value_template: '{% if value_json.occupancy == false and value_json.no_occupancy_since
+      >= 120 %} OFF {%else %} ON {%endif %}
+
+      '
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 6f19f665991a377b68684e2072385262
+    entity_id: light.kitchen_cabinet_lights
+    domain: light
+  - type: turn_off
+    device_id: dca8abcd0eabb8d83209caa1be2bba54
+    entity_id: light.kitchen_cabinet_lights_2
+    domain: light
+  mode: single
+- id: '1662700400078'
+  alias: Kitchen Lights Off (Sensors)
+  description: When motion is not detected and lights are on, turn them off.
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053dc73
+    payload: 'OFF'
+    value_template: '{% if value_json.occupancy == false and value_json.no_occupancy_since
+      >= 300 %} OFF {%else %} ON {%endif %}
+
+      '
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 4638b624067e02ce8312d788dccce138
+    entity_id: switch.kitchen_light
+    domain: switch
+  mode: single
+- id: '1663033425252'
+  alias: Turn Off Hallway Lights (Sensors)
+  description: When no motion is detected turn off the lights
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100050b70b
+    payload: 'OFF'
+    value_template: '{% if value_json.occupancy == false and value_json.no_occupancy_since
+      >= 60 %} OFF {%else %} ON {%endif %}
+
+      '
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053d11e
+    payload: 'OFF'
+    value_template: '{% if value_json.occupancy == false and value_json.no_occupancy_since
+      >= 60 %} OFF {%else %} ON {%endif %}
+
+      '
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      state: 'off'
+      entity_id: binary_sensor.bathroom_door
+    - condition: state
+      state: 'off'
+      entity_id: binary_sensor.jayden_door
+  action:
+  - type: turn_off
+    device_id: 4fdd542036d9da130e8976124672d690
+    entity_id: switch.hallway_lights
+    domain: switch
+  mode: single
+- id: '1663122016646'
+  alias: Office Window Vibration Detected
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.aqara_vibration_sensor_office
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: Vibration detected in office window!
+      cache: true
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.family_room_display
+      message: Vibration detected in office window!
+      cache: true
+  mode: single
+- id: '1663122592651'
+  alias: Guest Room Window Vibration
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.aqara_vibration_sensor_guest_room
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: Guest bedroom window vibration detected!
+      cache: true
+  - service: tts.google_cloud
+    data:
+      message: Guest bedroom window vibration detected!
+      entity_id: media_player.family_room_display
+      cache: true
+  mode: single
+- id: '1663139398091'
+  alias: Trash Bin Reminder - Green
+  description: ''
+  trigger:
+  - platform: calendar
+    event: start
+    offset: '-4:0:0'
+    entity_id: calendar.antonioorozco253_gmail_com
+  - platform: calendar
+    event: start
+    offset: '-3:0:0'
+    entity_id: calendar.antonioorozco253_gmail_com
+  condition:
+  - condition: state
+    entity_id: calendar.antonioorozco253_gmail_com
+    attribute: message
+    state: Trash Bin Green
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: Time to take out the trash and yard waste bin!
+      cache: true
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.family_room_display
+      message: Time to take out the trash and yard waste bin!
+      cache: true
+  - service: notify.mobile_app_pixel_6
+    data:
+      message: Time to take out the trash and yard waste bin!
+      title: Take out trash (green)
+  mode: single
+- id: '1663139487957'
+  alias: Trash Bin Reminder - Blue
+  description: ''
+  trigger:
+  - platform: calendar
+    event: start
+    offset: '-4:0:0'
+    entity_id: calendar.antonioorozco253_gmail_com
+  - platform: calendar
+    event: start
+    offset: '-3:0:0'
+    entity_id: calendar.antonioorozco253_gmail_com
+  condition:
+  - condition: state
+    entity_id: calendar.antonioorozco253_gmail_com
+    attribute: message
+    state: Trash Bin Blue
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: Time to take out the trash and recycle bin!
+      cache: true
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.family_room_display
+      message: Time to take out the trash and recycle bin!
+      cache: true
+  - service: notify.mobile_app_pixel_6
+    data:
+      message: Time to take out the trash and recycle bin!
+      title: Take out trash (blue)
+  mode: single
+- id: '1663207386621'
+  alias: Holidays in US Today
+  description: ''
+  trigger:
+  - platform: calendar
+    event: start
+    offset: '8:0:0'
+    entity_id: calendar.holidays_in_united_states
+  - platform: calendar
+    event: start
+    offset: '12:0:0'
+    entity_id: calendar.holidays_in_united_states
+  condition: []
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: 'Today is {{ trigger.calendar_event.summary }}.
+
+        '
+  mode: single
+- id: '1663209004318'
+  alias: Holidays in US Today (Tomorrow)
+  description: ''
+  trigger:
+  - platform: calendar
+    event: start
+    offset: '-3:0:0'
+    entity_id: calendar.holidays_in_united_states
+  - platform: calendar
+    event: start
+    offset: '-4:30:0'
+    entity_id: calendar.holidays_in_united_states
+  condition: []
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: 'Tomorrow is {{ trigger.calendar_event.summary }}.
+
+        '
+  mode: single
+- id: '1663301305974'
+  alias: Side Garage Door Safety Lock
+  description: ''
+  trigger:
+  - platform: time
+    at: '21:00:00'
+  - platform: time
+    at: '21:30:00'
+  - platform: time
+    at: '22:00:00'
+  - platform: time
+    at: '22:30:00'
+  - platform: time
+    at: '23:00:00'
+  condition: []
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.family_room_display
+      message: Lock side garage door!
+      cache: true
+  mode: single
+- id: '1663373039945'
+  alias: Mortgage Payment Notification
+  description: ''
+  trigger:
+  - platform: calendar
+    event: start
+    offset: '-4:0:0'
+    entity_id: calendar.antonioorozco253_gmail_com
+  - platform: calendar
+    event: start
+    offset: '-3:0:0'
+    entity_id: calendar.antonioorozco253_gmail_com
+  - platform: calendar
+    event: start
+    offset: '-12:0:0'
+    entity_id: calendar.antonioorozco253_gmail_com
+  condition:
+  - condition: state
+    entity_id: calendar.antonioorozco253_gmail_com
+    attribute: message
+    state: MORTGAGE PAYMENT DUE
+  action:
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.kitchen_display
+      message: It's the time of the month mother fucker. Pay your mortgage!
+  - service: tts.google_cloud
+    data:
+      entity_id: media_player.family_room_display
+      message: It's the time of the month mother fucker. Pay your mortgage!
+  - service: notify.mobile_app_pixel_6
+    data:
+      title: Mortgage Payment Due!
+      message: Pay your mortgage bill!
+  mode: single
+- id: '1663387995409'
+  alias: Toggle Office Lights
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: ed84c293-fdca-418d-b867-7aefa1c8869f
+  condition: []
+  action:
+  - service: light.toggle
+    data: {}
+    target:
+      entity_id: light.smart_ceiling_fan
+  mode: single
+- id: '1663388350067'
+  alias: Toggle Office Fan
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: 290c4ae8-4fec-4aaf-962b-91690af187bc
+  condition: []
+  action:
+  - service: fan.toggle
+    data: {}
+    target:
+      entity_id: fan.smart_ceiling_fan
+  mode: single
+- id: '1663640645822'
+  alias: Turn Off Dining Room Lights (Sensors)
+  description: When no motion is detected for more than 2 minutes, turn off the lights.
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053e66a
+    payload: 'OFF'
+    value_template: '{% if value_json.occupancy == false and value_json.no_occupancy_since
+      >= 120 %} OFF {%else %} ON {%endif %}
+
+      '
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      state: 'off'
+      entity_id: binary_sensor.jayden_door
+  action:
+  - type: turn_off
+    device_id: b6eeb4c358a33767c2da1024a8a17922
+    entity_id: switch.dining_room_lighs
+    domain: switch
+  mode: single
+- id: '1663823909101'
+  alias: Turn On Office Lights
+  description: When motion is detected and its late at night, turn on the lights.
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053de99
+    payload: 'ON'
+    value_template: '{% if value_json.illuminance <= 55 and value_json.occupancy ==
+      true %} ON {%else %} OFF {%endif %}
+
+      '
+  condition:
+  - condition: time
+    before: 08:00:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+    after: '17:00:00'
+    enabled: true
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.smart_ceiling_fan
+  mode: single
+- id: '1663824207331'
+  alias: Turn Off Office Lights and Fan (Sensors)
+  description: No one is in the office for more than 30 minutes, turn off everything
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053de99
+    payload: 'OFF'
+    value_template: '{% if value_json.occupancy == false and value_json.no_occupancy_since
+      >= 300 %} OFF {%else %} ON {%endif %}
+
+      '
+  condition:
+  - condition: state
+    entity_id: input_boolean.inhomeoffice
+    state: 'off'
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.smart_ceiling_fan
+      device_id: cdaa86d2e11606bafbbbe0572de2bb9b
+  mode: single
+- id: '1663824843028'
+  alias: Main Kitchen Lights Off (Sensors)
+  description: When motion is not detected and lights are on, turn them off.
+  trigger:
+  - platform: mqtt
+    topic: zigbee2mqtt/0x54ef44100053dc73
+    payload: 'OFF'
+    value_template: '{% if value_json.occupancy == false and value_json.no_occupancy_since
+      >= 420 %} OFF {%else %} ON {%endif %}
+
+      '
+  condition: []
+  action:
+  - type: turn_off
+    device_id: dac129f1046a8993b6c4602c75763b0f
+    entity_id: switch.main_kitchen_lights
+    domain: switch
+  mode: single
+- id: '1663826274362'
+  alias: Working in Home Office
+  description: Indicate that I am working from home office
+  trigger:
+  - platform: tag
+    tag_id: d9e7841d-6f87-4484-9212-2a5ee0a02096
+  condition:
+  - condition: state
+    entity_id: input_boolean.inhomeoffice
+    state: 'off'
+  action:
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.inhomeoffice
+  - service: notify.mobile_app_pixel_6
+    data:
+      message: Antonio is working!
+      title: Coding Mode On!
+  - service: notify.mobile_app_iphone
+    data:
+      title: Tu Papasito Chulo Dice
+      message: Que te ama y que esta trabajando!
   mode: single
