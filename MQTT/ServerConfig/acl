@@ -4,10 +4,17 @@ topic read $SYS/#
 # Allow anonymous to read weather
 topic read yolink/#
 topic read homeassistant/#
+topic read fpl/#
 
-# readwrite to the loop
-user <your username from above>
+# weewx readwrite to the loop
+user antonio
 topic yolink/#
 
-user <your username from above>
+user antonio
+topic fpl/#
+
+user antonio
 topic homeassistant/#
+
+user antonio
+topic zigbee2mqtt/#
