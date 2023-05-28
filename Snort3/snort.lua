@@ -29,6 +29,7 @@ HOME_NET = [[ 192.168.1.0/24 192.168.2.0/24 192.168.3.0/24 192.168.15.0/24 ]]
 EXTERNAL_NET = 'any'
 
 include 'snort_defaults.lua'
+-- include = 'dns_alert.lua'
 
 ---------------------------------------------------------------------------
 -- 2. configure inspection
@@ -194,8 +195,8 @@ ips =
     mode = tap,
     variables = default_variables,
     rules = [[ 
-        include $RULE_PATH//snort3-community-rules/snort3-community.rules
-        include $RULE_PATH//local.rules
+    	include $RULE_PATH//snort3-community-rules/snort3-community.rules
+	include $RULE_PATH//local.rules
     ]]
     -- Add to the rules list for custom rules
     -- include $RULE_PATH//local.rules
@@ -267,11 +268,16 @@ rate_filter =
 --}
 alert_json = {
     file = true,
-    fields = 'timestamp pkt_num proto pkt_gen pkt_len dir src_addr src_port dst_addr dst_port service rule priority class action b64_data msg',
+    fields = 'timestamp pkt_num proto pkt_gen pkt_len dir src_addr src_port src_ap dst_addr dst_port dst_ap service rule priority class action msg rule b64_data',
     limit = 500
 }
 --alert_full = { }
---alert_sfsocket = { }
+-- Deprecated
+--alert_sfsocket = {
+--    file = true,
+--    enabled = true,
+--    path = "/var/log/snort/",
+--}
 --alert_syslog = { }
 --unified2 = { }
 

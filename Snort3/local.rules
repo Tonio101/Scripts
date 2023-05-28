@@ -1,0 +1,2 @@
+alert udp [192.168.2.0/24, 192.168.15.0/24] any -> any 53 (msg:"Print DNS Query Name"; content:"|01 00 00 01 00 00 00 00 00 00|"; metadata:service dns, print; sid:1000001; rev:1;)
+
