@@ -87,7 +87,7 @@ class MqttConsumer(MqttClient):
             userdata (): MQTT client metadata.
             msg (json): JSON payload containing MQTT data.
         """
-        payload = json.loads(msg.payload.decode("utf-8"))
+        payload = json.loads(msg.payload.decode('utf-8'))
         self.acquire_lock()
         self.output_q.put(payload)
         self.release_lock()
@@ -126,10 +126,10 @@ class MqttProducer(MqttClient):
         # regular intervals and handle re-connects.
         self.client.loop_start()
 
-    def publish(self, data):
+    def publish(self, data: str):
         return self._publish(self.topic, data)
 
-    def _publish(self, topic: str, data):
+    def _publish(self, topic: str, data: str):
         """
         Publish events to topic
         """

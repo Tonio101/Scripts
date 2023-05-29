@@ -1,3 +1,5 @@
+import json
+
 from time import sleep
 from threading import Thread
 
@@ -8,7 +10,6 @@ class DnsStats(Thread):
         super().__init__(daemon=True)
         self.lock = lock
         self.input_q = input_q
-        # self.ip_dns_map = dict()
         self.batch_size = 50
         self.mqtt_client = None
 
@@ -38,16 +39,12 @@ class DnsStats(Thread):
         for alert in alerts:
             src_ip = alert['src_addr']
             dns_name = alert['dns_name']
-            # if src_ip not in self.ip_dns_map:
-            #     self.ip_dns_map[src_ip] = set()
-
-            # self.ip_dns_map[src_ip].add(dns_name)
             if not self.mqtt_client:
                 print("{} -> {}".format(
                     src_ip, dns_name
                 ))
                 continue
-            self.mqtt_client.publish(alert)
+            self.mqtt_client.publish(json.dumps(alert.encode('utf-8')))
 
     def run(self):
         try:
