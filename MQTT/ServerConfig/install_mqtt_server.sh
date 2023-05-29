@@ -1,7 +1,8 @@
 #!/bin/bash
 sudo apt update
 sudo apt install mosquitto mosquitto-clients
-sudo mv myconfig.conf /etc/mosquitto/conf.d/myconfig.conf
+sudo cp myconfig.conf /etc/mosquitto/conf.d/myconfig.conf
+sudo cp acl /etc/mosquitto/acl
 sudo service mosquitto restart
 
 read -p "MQTT Server Username" uservar

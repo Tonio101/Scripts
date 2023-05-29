@@ -1,12 +1,13 @@
 # Allow anonymous access to the sys
 topic read $SYS/#
 
-# Allow anonymous to read weather
+# Allow anonymous to read
 topic read yolink/#
 topic read homeassistant/#
 topic read fpl/#
+topic read zigbee2mqtt/#
+topic read snort/#
 
-# weewx readwrite to the loop
 user antonio
 topic yolink/#
 
@@ -18,3 +19,6 @@ topic homeassistant/#
 
 user antonio
 topic zigbee2mqtt/#
+
+user antonio
+topic snort/#
