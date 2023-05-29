@@ -1,6 +1,7 @@
 import argparse
 import yaml
 
+from time import sleep
 from queue import Queue
 from threading import Lock
 from snort3_alerts import Snort3Alerts
@@ -13,7 +14,7 @@ ALERT_FILE_JSON = '/var/log/snort/alert_json.txt'
 def parse_config(file) -> dict:
     data = None
     with open(file, 'r') as f:
-        data = yaml.load(f)
+        data = yaml.safe_load(f)
 
     return data
 
@@ -42,6 +43,8 @@ def main():
 
     mqtt_client = \
         MqttProducer(config['mqtt'])
+    mqtt_client.connect_to_broker()
+    sleep(1)
 
     dns_stats = \
         DnsStats(lock=lock,

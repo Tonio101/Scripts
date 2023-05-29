@@ -56,3 +56,42 @@ class DnsStats(Thread):
                 sleep(2)
         except Exception as ex:
             print(ex)
+
+
+class DnsStatsConsumer(Thread):
+
+    def __init__(self, lock, input_q):
+        super().__init__(daemon=True)
+        self.lock = lock
+        self.input_q = input_q
+        self.ip_dns_map = dict()
+
+    def acquire_lock(self):
+        if self.lock:
+            self.lock.acquire()
+
+    def release_lock(self):
+        if self.lock:
+            self.lock.release()
+
+    def process(self):
+
+        while not self.input_q.empty():
+            self.acquire_lock()
+            alert = self.input_q.get()
+            self.release_lock()
+
+            src_ip = alert['src_addr']
+            dns_name = alert['dns_name']
+            if src_ip not in self.ip_dns_map:
+                self.ip_dns_map[src_ip] = set()
+
+            self.ip_dns_map[src_ip].add(dns_name)
+
+    def run(self):
+        try:
+            while True:
+                self.process()
+                sleep(2)
+        except Exception as ex:
+            print(ex)

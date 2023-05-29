@@ -1,6 +1,5 @@
 import sys
 import json
-
 import random
 
 import paho.mqtt.client as mqtt
@@ -71,7 +70,7 @@ class MqttConsumer(MqttClient):
         Connect to MQTT broker
         """
         print("Connecting to broker...")
-        self.client.connect(self.mqtt_url, self.mqtt_port, 10)
+        self.client.connect(self.host, self.port, 10)
         # method blocks the program, handles reconnects, etc.
         # Since we are listening for published messages to the
         # YoLink broker topic, we need to run indefinitely.
@@ -101,7 +100,7 @@ class MqttConsumer(MqttClient):
 
         if (rc == 0):
             print(("Successfully connected to broker {}").format(
-                self.mqtt_url
+                self.host
             ))
         else:
             print("Connection with result code %s" % rc)
