@@ -44,7 +44,7 @@ class DnsStats(Thread):
                     src_ip, dns_name
                 ))
                 continue
-            self.mqtt_client.publish(json.dumps(alert.encode('utf-8')))
+            self.mqtt_client.publish(json.dumps(alert))
 
     def run(self):
         try:

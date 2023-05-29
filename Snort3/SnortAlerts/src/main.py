@@ -43,7 +43,6 @@ def main():
 
     mqtt_client = \
         MqttProducer(config['mqtt'])
-    mqtt_client.connect_to_broker()
     sleep(1)
 
     dns_stats = \
