@@ -1,0 +1,6 @@
+mqtt:
+  host: ''
+  port: 1883
+  topic: 'snort/alerts'
+  username: ''
+  password: ''
