@@ -3,9 +3,7 @@ import yaml
 
 from queue import Queue
 from threading import Lock
-from snort3_alerts import Snort3Alerts
-from stats import DnsStats
-from mqtt_client import MqttProducer
+from mqtt_client import MqttConsumer
 
 ALERT_FILE_JSON = '/var/log/snort/alert_json.txt'
 
@@ -35,23 +33,9 @@ def main():
     snort_q = Queue()
     lock = Lock()
 
-    snort3_alerts = \
-        Snort3Alerts(alert_json_file=ALERT_FILE_JSON,
-                     lock=lock,
-                     output_q=snort_q)
-
     mqtt_client = \
-        MqttProducer(config['mqtt'])
-
-    dns_stats = \
-        DnsStats(lock=lock,
-                 input_q=snort_q)
-    dns_stats.register_broker_client(mqtt_client)
-
-    snort3_alerts.start()
-    dns_stats.start()
-    snort3_alerts.join()
-    dns_stats.join()
+        MqttConsumer(config['mqtt'], lock, snort_q)
+    mqtt_client.connect_to_broker()
 
 
 if __name__ == "__main__":

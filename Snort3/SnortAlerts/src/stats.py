@@ -10,7 +10,6 @@ class DnsStats(Thread):
         self.input_q = input_q
         # self.ip_dns_map = dict()
         self.batch_size = 50
-        self.topic = None
         self.mqtt_client = None
 
     def acquire_lock(self):
@@ -21,8 +20,7 @@ class DnsStats(Thread):
         if self.lock:
             self.lock.release()
 
-    def register_broker_client(self, topic, mqtt_client):
-        self.topic = topic
+    def register_broker_client(self, mqtt_client):
         self.mqtt_client = mqtt_client
 
     def process(self):
@@ -49,7 +47,7 @@ class DnsStats(Thread):
                     src_ip, dns_name
                 ))
                 continue
-            self.mqtt_client.publish(self.topic, alert)
+            self.mqtt_client.publish(alert)
 
     def run(self):
         try:
