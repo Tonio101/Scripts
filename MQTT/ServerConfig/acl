@@ -22,3 +22,6 @@ topic zigbee2mqtt/#
 
 user antonio
 topic snort/#
+
+user antonio
+mqttmanager/#
